@@ -14,3 +14,8 @@ kubectl create rolebinding spiderman \
 
 kubectl get rolebindings
 ```
+
+```This makes spiderman capable to carry out any operation in his own namespace
+kubectl --namespace spiderman auth can-i \
+    "*" "*" --as spiderman
+```
