@@ -5,7 +5,8 @@
 Binding spiderman user in spiderman context to view role.
 it will be able to read from default namespace.
 
-``` kubectl create rolebinding spiderman \
+```
+kubectl create rolebinding spiderman \
     --clusterrole view \
     --user spiderman \
     --namespace default \
