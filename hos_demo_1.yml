@@ -1,0 +1,119 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devops-toolkit
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: devops-toolkit
+            port:
+              number: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myhospital
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      type: frontend
+      service: devops-toolkit
+
+  template:    #  this is used everytime when a pod gets created
+    metadata:
+      labels:
+        type: frontend
+        service: devops-toolkit
+    spec:    # This section specifies the desired behavior of the Pods that will be created from this template.
+      containers:
+        - name: frontend
+          image: 18c336445927/myhospital:v2.4
+          env:
+            - name: DEBUG
+              valueFrom: 
+                configMapKeyRef:
+                  name: django-config
+                  key: DEBUG
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: ALLOWED_HOSTS
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: DATABASE_URL
+                
+            - name: SECRET_KEY
+              valueFrom: 
+                configMapKeyRef: 
+                  name: django-config
+                  key: SECRET_KEY
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: django-config
+                  key: POSTGRES_PASSWORD
+        volumeMounts: 
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: jenkins-creds
+          mountPath: /etc/secrets
+      volumes:
+      - name: jenkins-home 
+        emptyDir: {}
+      - name: jenkins-creds
+        secret:
+          secretName: my-creds
+          defaultMode: 0444
+          items: 
+          - key: username
+            path: jenkins-user
+          - key: password
+            path: jenkins-pass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-toolkit
+spec:  # specifications for how the Service should operate
+  ports:
+  - port: 80   # the port the service listens on
+    targetPort: 8000   # the port the Pods listen on
+  selector:   # here it is defining which pods the service should route the traffic to
+    type: frontend
+    service: devops-toolkit
+

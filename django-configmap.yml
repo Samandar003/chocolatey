@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+data:
+  DEBUG: "FALSE"
+  ALLOWED_HOSTS: "localhost,127.0.0.1"
+  SECRET_KEY: 'django-insecure-vo_3js8)^*+7u)mas#hycp37-k*j$+kyil_au*c(=$dftf1q%4'
+  DATABASE_URL: "postgres://postgres:4Yillikarmiya@db_host:5432/hospital_db"
+  POSTGRES_HOST: "devops-toolkit"
+  POSTGRES_PORT: '5432'
+  POSTGRES_DB: "hospital_db"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: 'Database2024'

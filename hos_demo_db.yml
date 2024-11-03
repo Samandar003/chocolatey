@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: db
+      service: postgres-service
+  strategy: 
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        type: db
+        service: postgres-service
+        vendor: MongoLabs 
+    spec:
+      containers:
+      - name: my-postgres
+        image: postgres:13
+        env: 
+        - name: POSTGRES_DB
+          value: hospital_db
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: Database2024
+        - name: POSTGRES_HOST
+          value: postgres-service
+        ports:
+        - containerPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: postgres-service
+spec: 
+  ports: 
+  - port: 5432
+    targetPort: 5432
+  selector: 
+    type: db
+    service: postgres-service
