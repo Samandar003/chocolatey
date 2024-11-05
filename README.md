@@ -23,5 +23,8 @@ Priority goes accordingly
 Kubernetes will destroy one or more containers. Its decision to destroy a certain container will not be random, but based on the assigned Quality of Service (QoS). Those with lowest priority will be terminated first.  
 
 `Guaranteed QoS` - when requested resource equals to limited resource
+
 `Burstable QoS` - when requested resource is inequal to limitted resource
+
 `BestEffort QoS` - when resource is not defined.
+
