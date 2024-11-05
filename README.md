@@ -14,8 +14,13 @@ kubectl create rolebinding spiderman \
 
 kubectl get rolebindings
 ```
-
-```This makes spiderman capable to carry out any operation in his own namespace
+This makes spiderman capable to carry out any operation in his own namespace
+```
 kubectl --namespace spiderman auth can-i \
     "*" "*" --as spiderman
 ```
+Priority goes accordingly
+Kubernetes will destroy one or more containers. Its decision to destroy a certain container will not be random, but based on the assigned Quality of Service (QoS). Those with lowest priority will be terminated first.  
+`Guaranteed QoS` - when requested resource equals to limited resource
+`Burstable QoS` - when requested resource is inequal to limitted resource
+`BestEffort QoS` - when resource is not defined.
