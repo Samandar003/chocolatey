@@ -40,6 +40,20 @@ spec:
       containers:
         - name: frontend
           image: 18c336445927/myhospital:v2.4
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 50m
+            requests:
+              memory: 63Mi
+              cpu: 30m  # 300m=0.3 cpu
+
+          volumeMounts: 
+          - name: jenkins-home
+            mountPath: /var/jenkins_home
+          - name: jenkins-creds
+            mountPath: /etc/secrets
+
           env:
             - name: DEBUG
               valueFrom: 
@@ -87,11 +101,7 @@ spec:
                 configMapKeyRef:
                   name: django-config
                   key: POSTGRES_PASSWORD
-        volumeMounts: 
-        - name: jenkins-home
-          mountPath: /var/jenkins_home
-        - name: jenkins-creds
-          mountPath: /etc/secrets
+
       volumes:
       - name: jenkins-home 
         emptyDir: {}
